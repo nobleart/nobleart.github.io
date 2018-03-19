@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head profile='http://www.w3.org/2005/10/profile'>
+    <title>Noble GIF Maker</title>
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <!--<script type="text/javascript" src="client.js"></script>-->
+    <!--<link rel="stylesheet" href="style.css">-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500|Open+Sans" rel="stylesheet">
+    <script type="text/javascript" src="Animated_GIF.min.js"></script>
+</head>
+
+<script>
+function readURL(input) {
+    if (input.files) {
+        for (var i = 0; i < input.files.length; i++) {
+            var new_image_tag = "<img class='blah' src='#' alt='your image' />";
+            document.getElementById("uploadedImages").insertAdjacentHTML("beforeend", new_image_tag);
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var blahs = document.getElementsByClassName("blah");
+                blahs[blahs.length - 1].src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[i]);
+        }
+    }
+}
+// https://github.com/sole/Animated_GIF
+function createGif() {
+    var imgs = document.getElementsByClassName("blah");
+    //var imgs = document.querySelectorAll('img');
+    
+    var ag = new Animated_GIF(); 
+    ag.setSize(200, 200);
+    ag.setDelay(1000);
+    
+    for(var i = 0; i < imgs.length; i++) {
+        ag.addFrame(imgs[i]);
+    }
+        
+    // This is asynchronous, rendered with WebWorkers
+    ag.getBase64GIF(function(image) {
+        document.getElementById("outputGif").src = image;
+        document.getElementById("outputGif").style.visibility = "visible";
+    });
+}
+</script>
+
+<style>
+body {
+    padding: 4.5em 0;
+    background-color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+div {
+    padding: 1em 0;
+    display: flex;
+    justify-content: center;
+}
+.blah {
+    width: 200px;
+    height: 200px;
+}
+#outputGif {
+    visibility: hidden;
+}
+</style>
+
+<body>
+    <div id="title">Mrs. Noble's Super-cool GIF-maker</div>
+    
+    <div id="inputs">
+        <input type="file" onchange="readURL(this);" />
+    </div>
+    
+    <div id="uploadedImages"></div>
+    
+    <div id="output">
+        <button onclick="createGif()">Create GIF!</button>
+    </div>
+    
+    <div>
+        <img id="outputGif" src="#" alt="output" />
+    </div>
+</body>
+
+</html>
+
